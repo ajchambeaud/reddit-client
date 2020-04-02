@@ -1,4 +1,3 @@
-import data from "./top.json";
 import { Entry } from "../store/entries/types";
 
 interface Response {
@@ -39,7 +38,10 @@ export function parseEntries(data: Response): Entry[] {
   }));
 }
 
-export function getEntries(): Promise<Entry[]> {
+export async function getEntries(): Promise<Entry[]> {
+  const response = await fetch("https://www.reddit.com/top.json");
+  const data = await response.json();
+
   const entries = parseEntries(data);
 
   return Promise.resolve(entries);
