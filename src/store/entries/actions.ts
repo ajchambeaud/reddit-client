@@ -1,8 +1,6 @@
 import { Entry, EntryAction, RequestStatus } from "./types";
 
 export function fetchEntries(): EntryAction {
-  console.log("fetchEntries called");
-
   return {
     type: "FETCH_ENTRIES"
   };

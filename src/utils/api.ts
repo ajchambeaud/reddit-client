@@ -39,7 +39,7 @@ export function parseEntries(data: Response): Entry[] {
 }
 
 export async function getEntries(): Promise<Entry[]> {
-  const response = await fetch("https://www.reddit.com/top.json");
+  const response = await fetch("https://www.reddit.com/top.json?limit=50");
   const data = await response.json();
 
   const entries = parseEntries(data);
