@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/ajchambeaud/reddit-client.svg?style=svg)](https://circleci.com/gh/ajchambeaud/reddit-client)
+
+
 # Reddit Client
 
 ## Running the project
