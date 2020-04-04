@@ -1,6 +1,9 @@
 export type RequestStatus = "NotAsked" | "Pending" | "Success" | "Failure";
 
+export type ID = string;
+
 export interface Entry {
+  id: ID;
   title: string;
   author: string;
   created: number;
@@ -14,16 +17,17 @@ export interface EntriesState {
   status: RequestStatus;
 }
 
-interface FetchEntriesAction {
+export interface FetchEntriesAction {
   type: "FETCH_ENTRIES";
+  payload?: ID;
 }
 
-interface EntriesSuccessAction {
+export interface EntriesSuccessAction {
   type: "FETCH_ENTRIES_SUCCESS";
   payload: Entry[];
 }
 
-interface EntriesFailureAction {
+export interface EntriesFailureAction {
   type: "FETCH_ENTRIES_FAILURE";
 }
 

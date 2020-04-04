@@ -1,6 +1,8 @@
+import { takeEvery, call, put } from "redux-saga/effects";
 import { Entry } from "./types";
 import { fetchEntriesListener, fetchEntriesWorker } from "./sagas";
-import { takeEvery, call, put } from "redux-saga/effects";
+import { getEntries } from "../../utils/api";
+
 import {
   fetchEntries,
   fetchEntriesFailure,
@@ -8,6 +10,7 @@ import {
 } from "./actions";
 
 const entry: Entry = {
+  id: "foo",
   title: "Man trying to return a dog's toy gets tricked into playing fetch",
   author: "washedupwornout",
   created: 1411975314,
@@ -40,4 +43,12 @@ test("fetchEntriesWorker() should dispatch fetchEntriesSuccess when api request 
   gen.next();
 
   expect(gen.next([entry]).value).toEqual(expectedEffect);
+});
+
+test("fetchEntriesWorker() should call api whit after parameter taken from action payload", () => {
+  const gen = fetchEntriesWorker(fetchEntries("123"));
+
+  const expectedEffect = call(getEntries, fetchEntries("123").payload);
+
+  expect(gen.next().value).toEqual(expectedEffect);
 });

@@ -1,5 +1,5 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { EntryAction } from "./types";
+import { FetchEntriesAction } from "./types";
 import { getEntries } from "../../utils/api";
 import {
   fetchEntries,
@@ -7,9 +7,9 @@ import {
   fetchEntriesFailure
 } from "./actions";
 
-export function* fetchEntriesWorker(action: EntryAction) {
+export function* fetchEntriesWorker(action: FetchEntriesAction) {
   try {
-    const data = yield call(getEntries);
+    const data = yield call(getEntries, action.payload);
     yield put(fetchEntriesSuccess(data));
   } catch (error) {
     yield put(fetchEntriesFailure());

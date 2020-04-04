@@ -5,6 +5,7 @@ test("parseEntries() should parse response data", () => {
   const parsed = parseEntries(mockedResponse);
   const expected = [
     {
+      id: "t3_2hqlxp",
       title: "Man trying to return a dog's toy gets tricked into playing fetch",
       author: "washedupwornout",
       created: 1411975314,

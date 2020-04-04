@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 
@@ -23,6 +23,14 @@ const EntryContainer = styled.div`
 function EntriesList() {
   const dispatch = useDispatch();
   const entries = useSelector((state: RootState) => state.entries);
+  const after =
+    entries.list.length > 0
+      ? entries.list[entries.list.length - 1].id
+      : undefined;
+
+  const fetchCallback = useCallback(() => {
+    dispatch(fetchEntries(after));
+  }, [after, dispatch]);
 
   useEffect(() => {
     dispatch(fetchEntries());
@@ -39,6 +47,8 @@ function EntriesList() {
       )}
 
       {entries.status === "Pending" && <div>Loading</div>}
+
+      <button onClick={fetchCallback}>Load more</button>
     </EntriesListContainer>
   );
 }

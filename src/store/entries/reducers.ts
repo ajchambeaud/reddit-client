@@ -1,4 +1,4 @@
-import { EntryAction, EntriesState, RequestStatus } from "./types";
+import { EntryAction, EntriesState } from "./types";
 
 const initialState: EntriesState = {
   status: "NotAsked",
@@ -14,10 +14,13 @@ export function entriesReducer(
       return { ...state, status: "Pending" };
 
     case "FETCH_ENTRIES_SUCCESS":
-      return { list: action.payload, status: "Success" };
+      return {
+        list: [...state.list, ...action.payload],
+        status: "Success"
+      };
 
     case "FETCH_ENTRIES_FAILURE":
-      return { list: [], status: "Failure" };
+      return { ...state, status: "Failure" };
 
     default:
       return state;

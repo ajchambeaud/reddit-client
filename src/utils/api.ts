@@ -1,4 +1,4 @@
-import { Entry } from "../store/entries/types";
+import { Entry, ID } from "../store/entries/types";
 
 interface Response {
   data?: {
@@ -8,6 +8,7 @@ interface Response {
 
 interface EntryResponseData {
   data: {
+    name: string;
     title: string;
     author: string;
     created: number;
@@ -19,16 +20,9 @@ interface EntryResponseData {
 
 export function parseEntries(data: Response): Entry[] {
   const list = data?.data?.children || [];
-  const keys = [
-    "title",
-    "author",
-    "created",
-    "thumbnail",
-    "num_comments",
-    "visited"
-  ];
 
   return list.map(item => ({
+    id: item.data.name,
     title: item.data.title,
     author: item.data.author,
     created: item.data.created,
@@ -38,8 +32,12 @@ export function parseEntries(data: Response): Entry[] {
   }));
 }
 
-export async function getEntries(): Promise<Entry[]> {
-  const response = await fetch("https://www.reddit.com/top.json?limit=50");
+export async function getEntries(after?: ID, limit = 50): Promise<Entry[]> {
+  const url = `https://www.reddit.com/top.json?limit=${limit}${
+    after ? `&after=${after}` : ""
+  }`;
+
+  const response = await fetch(url);
   const data = await response.json();
 
   const entries = parseEntries(data);
