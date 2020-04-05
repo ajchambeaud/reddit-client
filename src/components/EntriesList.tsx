@@ -6,12 +6,16 @@ import PulseLoader from "react-spinners/PulseLoader";
 import { fetchEntries } from "../store/entries/actions";
 import { RootState } from "../store";
 import useInfinityScroll from "../hooks/useInfinityScroll";
+import EntryRow from "./EntryRow";
+import theme from "../utils/theme";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 30%;
+  min-width: 250px;
   height: 100vh;
+  background-color: ${theme.darkBlack};
 `;
 
 const EntriesListContainer = styled.div`
@@ -21,18 +25,9 @@ const EntriesListContainer = styled.div`
   overflow: scroll;
 `;
 
-const EntryContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 5px;
-  margin: 2px;
-  background-color: darkgray;
-  color: white;
-`;
-
 const Header = styled.div`
   display: flex;
-  background-color: #0f0f0f;
+  background-color: ${theme.lightBlack};
   color: #d1d1d1;
   justify-content: center;
 
@@ -43,8 +38,7 @@ const Header = styled.div`
 
 const Footer = styled.div`
   display: flex;
-  background-color: #0f0f0f;
-  color: #d1d1d1;
+  background-color: ${theme.lightBlack};
 `;
 
 const Button = styled.button`
@@ -55,21 +49,23 @@ const Button = styled.button`
   padding: 0.6em;
   font-size: 0.8em;
   font-weight: bolder;
-  color: #ff9800;
-  background: #0e0e0e;
+  color: ${theme.defaultOrange};
+  background: ${theme.lightBlack};
+  cursor: pointer;
 
   &:focus {
     outline: 0;
   }
 
   &:hover {
-    color: #ff98008c;
+    opacity: 0.7;
   }
 `;
 
 const SpinnerContainer = styled.div`
   display: flex;
   justify-content: center;
+  background-color: ${theme.darkBlack};
 `;
 
 function EntriesList() {
@@ -103,7 +99,7 @@ function EntriesList() {
       </Header>
       <EntriesListContainer onScroll={onScrollCallback}>
         {entries.list.map(entry => (
-          <EntryContainer key={entry.id}>{entry.title}</EntryContainer>
+          <EntryRow key={entry.id} entry={entry} />
         ))}
 
         {entries.status === "Failure" && (
