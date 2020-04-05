@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import moment from "moment";
 import { ArrowIosForwardOutline } from "@styled-icons/evaicons-outline/ArrowIosForwardOutline";
@@ -140,14 +140,25 @@ const Arrow = styled(ArrowIosForwardOutline)`
   width: 20px;
 `;
 
+const Animated = styled.div`
+  transition: all 0.5s;
+
+  &.dismissed {
+    transform: translate3d(-100%, 0, 0);
+  }
+`;
+
 function EntryRow({ entry }: EntryRowProps) {
+  const [dismissed, setDismissed] = useState(false);
   const dispatch = useDispatch();
+
   const onDismissCallback = useCallback(() => {
-    dispatch(dismissEntry(entry.id));
-  }, [dispatch, entry]);
+    setDismissed(true);
+    setTimeout(() => dispatch(dismissEntry(entry.id)), 500);
+  }, [dispatch, setDismissed, entry]);
 
   return (
-    <>
+    <Animated className={dismissed ? "dismissed" : ""}>
       <RowContainer>
         <Container>
           <Header>
@@ -183,7 +194,7 @@ function EntryRow({ entry }: EntryRowProps) {
       <Divider>
         <hr />
       </Divider>
-    </>
+    </Animated>
   );
 }
 

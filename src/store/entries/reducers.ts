@@ -1,5 +1,4 @@
 import { EntryAction, EntriesState } from "./types";
-import { listenerCount } from "cluster";
 
 const initialState: EntriesState = {
   status: "NotAsked",

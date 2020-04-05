@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import PulseLoader from "react-spinners/PulseLoader";
@@ -23,6 +23,11 @@ const EntriesListContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  transition: all 0.5s;
+
+  &.dismissed {
+    transform: translate3d(-100%, -100%, 0);
+  }
 `;
 
 const Header = styled.div`
@@ -75,6 +80,7 @@ const SpinnerContainer = styled.div`
 
 function EntriesList() {
   const dispatch = useDispatch();
+  const [dismissed, setDismissed] = useState(false);
   const entries = useSelector((state: RootState) => state.entries);
 
   const after =
@@ -89,17 +95,21 @@ function EntriesList() {
   }, [dispatch]);
 
   const onInfinityScroll = useCallback(() => {
-    if (afterRef.current !== after) {
+    if (afterRef.current !== after && entries.list.length !== 0) {
       afterRef.current = after;
       dispatch(fetchEntries(after));
     }
-  }, [afterRef, dispatch, after]);
+  }, [afterRef, dispatch, after, entries]);
 
   const onScrollCallback = useInfinityScroll(onInfinityScroll);
 
   const onDismissAllCallback = useCallback(() => {
-    dispatch(dismissAll());
-  }, [dispatch]);
+    setDismissed(true);
+    setTimeout(() => {
+      dispatch(dismissAll());
+      setDismissed(false);
+    }, 500);
+  }, [dispatch, setDismissed]);
 
   const onContainerClickCallback = useCallback(() => {
     if (entries.status !== "Pending" && entries.list.length === 0) {
@@ -116,6 +126,7 @@ function EntriesList() {
       <EntriesListContainer
         onScroll={onScrollCallback}
         onClick={onContainerClickCallback}
+        className={dismissed ? "dismissed" : ""}
       >
         {entries.list.map(entry => (
           <EntryRow key={entry.id} entry={entry} />
