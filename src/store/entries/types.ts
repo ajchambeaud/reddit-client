@@ -31,7 +31,18 @@ export interface EntriesFailureAction {
   type: "FETCH_ENTRIES_FAILURE";
 }
 
+export interface DismissEntryAction {
+  type: "DISMISS_ENTRY";
+  payload: ID;
+}
+
+export interface DismissAllAction {
+  type: "DISMISS_ALL";
+}
+
 export type EntryAction =
   | FetchEntriesAction
   | EntriesSuccessAction
-  | EntriesFailureAction;
+  | EntriesFailureAction
+  | DismissEntryAction
+  | DismissAllAction;

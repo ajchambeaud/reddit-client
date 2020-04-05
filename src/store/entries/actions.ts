@@ -3,7 +3,9 @@ import {
   Entry,
   FetchEntriesAction,
   EntriesSuccessAction,
-  EntriesFailureAction
+  EntriesFailureAction,
+  DismissEntryAction,
+  DismissAllAction
 } from "./types";
 
 export function fetchEntries(after?: ID): FetchEntriesAction {
@@ -23,5 +25,18 @@ export function fetchEntriesSuccess(entries: Entry[]): EntriesSuccessAction {
 export function fetchEntriesFailure(): EntriesFailureAction {
   return {
     type: "FETCH_ENTRIES_FAILURE"
+  };
+}
+
+export function dismissEntry(id: ID): DismissEntryAction {
+  return {
+    type: "DISMISS_ENTRY",
+    payload: id
+  };
+}
+
+export function dismissAll(): DismissAllAction {
+  return {
+    type: "DISMISS_ALL"
   };
 }

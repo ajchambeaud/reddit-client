@@ -1,4 +1,5 @@
 import { EntryAction, EntriesState } from "./types";
+import { listenerCount } from "cluster";
 
 const initialState: EntriesState = {
   status: "NotAsked",
@@ -21,6 +22,18 @@ export function entriesReducer(
 
     case "FETCH_ENTRIES_FAILURE":
       return { ...state, status: "Failure" };
+
+    case "DISMISS_ENTRY":
+      return {
+        ...state,
+        list: state.list.filter(entry => entry.id !== action.payload)
+      };
+
+    case "DISMISS_ALL":
+      return {
+        ...state,
+        list: []
+      };
 
     default:
       return state;

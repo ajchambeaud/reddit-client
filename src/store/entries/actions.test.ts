@@ -1,7 +1,9 @@
 import {
   fetchEntries,
   fetchEntriesFailure,
-  fetchEntriesSuccess
+  fetchEntriesSuccess,
+  dismissEntry,
+  dismissAll
 } from "./actions";
 
 test("fetchEntries() should return the proper action type", () => {
@@ -35,4 +37,17 @@ test("fetchEntriesSuccess() should return the proper action type", () => {
   const action = fetchEntriesSuccess([]);
 
   expect(action.type).toBe("FETCH_ENTRIES_SUCCESS");
+});
+
+test("dismissEntry() should return the proper action type and payload", () => {
+  const action = dismissEntry("123");
+
+  expect(action.type).toBe("DISMISS_ENTRY");
+  expect(action.payload).toBe("123");
+});
+
+test("dismissEntry() should return the proper action type", () => {
+  const action = dismissAll();
+
+  expect(action.type).toBe("DISMISS_ALL");
 });

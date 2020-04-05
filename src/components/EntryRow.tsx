@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import moment from "moment";
-import { Entry } from "../store/entries/types";
-import VisitedCircle from "./VisitedCircle";
 import { ArrowIosForwardOutline } from "@styled-icons/evaicons-outline/ArrowIosForwardOutline";
 import { CircleWithCross } from "@styled-icons/entypo/CircleWithCross";
+
+import { Entry } from "../store/entries/types";
+import VisitedCircle from "./VisitedCircle";
 import theme from "../utils/theme";
+import { dismissEntry } from "../store/entries/actions";
 
 interface EntryRowProps {
   entry: Entry;
@@ -138,7 +141,10 @@ const Arrow = styled(ArrowIosForwardOutline)`
 `;
 
 function EntryRow({ entry }: EntryRowProps) {
-  console.log({ entry });
+  const dispatch = useDispatch();
+  const onDismissCallback = useCallback(() => {
+    dispatch(dismissEntry(entry.id));
+  }, [dispatch, entry]);
 
   return (
     <>
@@ -163,7 +169,7 @@ function EntryRow({ entry }: EntryRowProps) {
             <p>{entry.title}</p>
           </Body>
           <Footer>
-            <DismissButton>
+            <DismissButton onClick={onDismissCallback}>
               <Cross />
               Dismiss Post
             </DismissButton>

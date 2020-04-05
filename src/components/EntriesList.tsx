@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import PulseLoader from "react-spinners/PulseLoader";
 
-import { fetchEntries } from "../store/entries/actions";
+import { fetchEntries, dismissAll } from "../store/entries/actions";
 import { RootState } from "../store";
 import useInfinityScroll from "../hooks/useInfinityScroll";
 import EntryRow from "./EntryRow";
@@ -22,7 +22,7 @@ const EntriesListContainer = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  overflow: auto;
 `;
 
 const Header = styled.div`
@@ -60,6 +60,11 @@ const Button = styled.button`
   &:hover {
     opacity: 0.7;
   }
+
+  &:disabled {
+    color: ${theme.defaultGray};
+    cursor: not-allowed;
+  }
 `;
 
 const SpinnerContainer = styled.div`
@@ -92,12 +97,26 @@ function EntriesList() {
 
   const onScrollCallback = useInfinityScroll(onInfinityScroll);
 
+  const onDismissAllCallback = useCallback(() => {
+    dispatch(dismissAll());
+  }, [dispatch]);
+
+  const onContainerClickCallback = useCallback(() => {
+    if (entries.status !== "Pending" && entries.list.length === 0) {
+      dispatch(fetchEntries());
+    }
+  }, [dispatch, entries]);
+
   return (
     <Container>
       <Header>
         <h1>Reddit Posts</h1>
       </Header>
-      <EntriesListContainer onScroll={onScrollCallback}>
+
+      <EntriesListContainer
+        onScroll={onScrollCallback}
+        onClick={onContainerClickCallback}
+      >
         {entries.list.map(entry => (
           <EntryRow key={entry.id} entry={entry} />
         ))}
@@ -112,8 +131,14 @@ function EntriesList() {
           </SpinnerContainer>
         )}
       </EntriesListContainer>
+
       <Footer>
-        <Button onClick={() => {}}>Dismiss All</Button>
+        <Button
+          onClick={onDismissAllCallback}
+          disabled={entries.status === "Pending" || entries.list.length === 0}
+        >
+          Dismiss All
+        </Button>
       </Footer>
     </Container>
   );

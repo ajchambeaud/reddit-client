@@ -3,7 +3,9 @@ import { entriesReducer } from "./reducers";
 import {
   fetchEntries,
   fetchEntriesFailure,
-  fetchEntriesSuccess
+  fetchEntriesSuccess,
+  dismissEntry,
+  dismissAll
 } from "./actions";
 
 const initialState: EntriesState = {
@@ -12,7 +14,7 @@ const initialState: EntriesState = {
 };
 
 const entry: Entry = {
-  id: "asd",
+  id: "t3_2hqlxp",
   title: "Man trying to return a dog's toy gets tricked into playing fetch",
   author: "washedupwornout",
   created: 1411975314,
@@ -53,9 +55,25 @@ test("entriesReducer() should not reset the entries list when fetchEntriesFailur
   expect(state2.list.length).toBe(1);
 });
 
-test("entriesReducer() should append entries to the list when successive call to fetchEntries", () => {
-  const state1 = entriesReducer(initialState, fetchEntriesSuccess([entry]));
-  const state2 = entriesReducer(state1, fetchEntriesSuccess([entry]));
+test("entriesReducer() should remove item from list when dismissEntry is dispatched", () => {
+  const entry1 = { ...entry };
+  const entry2 = { ...entry, id: "123" };
+  const state1 = { ...initialState, list: [entry1, entry2] };
 
-  expect(state2.list.length).toBe(2);
+  const action = dismissEntry(entry1.id);
+  const state2 = entriesReducer(state1, action);
+
+  expect(state2.list.length).toBe(1);
+  expect(state2.list[0].id).toBe(entry2.id);
+});
+
+test("entriesReducer() should remove all item from list when dismissAll is dispatched", () => {
+  const entry1 = { ...entry };
+  const entry2 = { ...entry, id: "123" };
+  const state1 = { ...initialState, list: [entry1, entry2] };
+
+  const action = dismissAll();
+  const state2 = entriesReducer(state1, action);
+
+  expect(state2.list.length).toBe(0);
 });
