@@ -13,7 +13,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 30%;
-  min-width: 250px;
+  min-width: 350px;
   height: 100vh;
   background-color: ${theme.darkBlack};
 `;
