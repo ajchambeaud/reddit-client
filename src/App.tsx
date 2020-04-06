@@ -1,5 +1,6 @@
 import React from "react";
 import EntriesList from "./components/EntriesList";
+import EntryView from "./components/EntryView";
 import styled from "styled-components";
 
 const AppContainer = styled.div`
@@ -12,6 +13,7 @@ function App() {
   return (
     <AppContainer>
       <EntriesList />
+      <EntryView />
     </AppContainer>
   );
 }

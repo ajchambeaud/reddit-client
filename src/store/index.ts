@@ -5,7 +5,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 import { EntriesState } from "./entries/types";
 import { entriesReducer } from "./entries/reducers";
-import { fetchEntriesListener } from "./entries/sagas";
+import { fetchEntriesListener, selectEntryListener } from "./entries/sagas";
 
 export interface RootState {
   entries: EntriesState;
@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
 });
 
 function* rootSaga() {
-  yield all([fetchEntriesListener()]);
+  yield all([fetchEntriesListener(), selectEntryListener()]);
 }
 
 const sagaMiddleware = createSagaMiddleware();

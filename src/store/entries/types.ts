@@ -15,6 +15,7 @@ export interface Entry {
 export interface EntriesState {
   list: Entry[];
   status: RequestStatus;
+  selected?: Entry;
 }
 
 export interface FetchEntriesAction {
@@ -40,9 +41,15 @@ export interface DismissAllAction {
   type: "DISMISS_ALL";
 }
 
+export interface SelectEntryAction {
+  type: "SELECT_ENTRY";
+  payload: Entry;
+}
+
 export type EntryAction =
   | FetchEntriesAction
   | EntriesSuccessAction
   | EntriesFailureAction
   | DismissEntryAction
-  | DismissAllAction;
+  | DismissAllAction
+  | SelectEntryAction;

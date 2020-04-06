@@ -5,7 +5,8 @@ import {
   fetchEntriesFailure,
   fetchEntriesSuccess,
   dismissEntry,
-  dismissAll
+  dismissAll,
+  selectEntry
 } from "./actions";
 
 const initialState: EntriesState = {
@@ -76,4 +77,18 @@ test("entriesReducer() should remove all item from list when dismissAll is dispa
   const state2 = entriesReducer(state1, action);
 
   expect(state2.list.length).toBe(0);
+});
+
+test("entriesReducer() should select the right item when selectEntry is dispatched", () => {
+  const entry1 = { ...entry };
+  const entry2 = { ...entry, id: "123" };
+  const state1 = { ...initialState, list: [entry1, entry2] };
+
+  const action = selectEntry(entry1);
+  const state2 = entriesReducer(state1, action);
+
+  expect(state2.selected).toBe(entry1);
+  expect(
+    state2.list.find((entry: Entry) => entry.id === entry1.id)?.visited
+  ).toBe(true);
 });

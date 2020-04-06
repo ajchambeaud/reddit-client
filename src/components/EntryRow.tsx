@@ -7,15 +7,12 @@ import { CircleWithCross } from "@styled-icons/entypo/CircleWithCross";
 
 import { Entry } from "../store/entries/types";
 import VisitedCircle from "./VisitedCircle";
+import Image from "./Image";
 import theme from "../utils/theme";
-import { dismissEntry } from "../store/entries/actions";
+import { dismissEntry, selectEntry } from "../store/entries/actions";
 
 interface EntryRowProps {
   entry: Entry;
-}
-
-interface ImageProps {
-  thumbnail: string;
 }
 
 const RowContainer = styled.div`
@@ -31,6 +28,12 @@ const ArrowContainer = styled.div`
   justify-content: center;
   padding-left: 10px;
   padding-right: 10px;
+  cursor: pointer;
+`;
+
+const Arrow = styled(ArrowIosForwardOutline)`
+  color: ${theme.defaultWhite};
+  width: 20px;
 `;
 
 const Container = styled.div`
@@ -62,6 +65,7 @@ const Body = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 1em;
+  cursor: pointer;
 
   p {
     width: 100%;
@@ -71,18 +75,6 @@ const Body = styled.div`
     line-clamp: 3;
     overflow: hidden;
   }
-`;
-
-const Image = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  width: 70px;
-  height: 70px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("${(props: ImageProps) => props.thumbnail}");
-  background-color: ${theme.defaultGray};
-  margin-right: 10px;
 `;
 
 const Footer = styled.div`
@@ -135,11 +127,6 @@ const Divider = styled.div`
   }
 `;
 
-const Arrow = styled(ArrowIosForwardOutline)`
-  color: ${theme.defaultWhite};
-  width: 20px;
-`;
-
 const Animated = styled.div`
   transition: all 0.5s;
 
@@ -155,7 +142,11 @@ function EntryRow({ entry }: EntryRowProps) {
   const onDismissCallback = useCallback(() => {
     setDismissed(true);
     setTimeout(() => dispatch(dismissEntry(entry.id)), 500);
-  }, [dispatch, setDismissed, entry]);
+  }, [dispatch, entry]);
+
+  const onSelectCallback = useCallback(() => {
+    dispatch(selectEntry(entry));
+  }, [dispatch, entry]);
 
   return (
     <Animated className={dismissed ? "dismissed" : ""}>
@@ -175,7 +166,7 @@ function EntryRow({ entry }: EntryRowProps) {
                 .fromNow()}
             </div>
           </Header>
-          <Body>
+          <Body onClick={onSelectCallback}>
             <Image thumbnail={entry.thumbnail} />
             <p>{entry.title}</p>
           </Body>
@@ -187,7 +178,7 @@ function EntryRow({ entry }: EntryRowProps) {
             <p>{entry.numComments} comments</p>
           </Footer>
         </Container>
-        <ArrowContainer>
+        <ArrowContainer onClick={onSelectCallback}>
           <Arrow />
         </ArrowContainer>
       </RowContainer>

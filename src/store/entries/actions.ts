@@ -5,7 +5,8 @@ import {
   EntriesSuccessAction,
   EntriesFailureAction,
   DismissEntryAction,
-  DismissAllAction
+  DismissAllAction,
+  SelectEntryAction
 } from "./types";
 
 export function fetchEntries(after?: ID): FetchEntriesAction {
@@ -38,5 +39,12 @@ export function dismissEntry(id: ID): DismissEntryAction {
 export function dismissAll(): DismissAllAction {
   return {
     type: "DISMISS_ALL"
+  };
+}
+
+export function selectEntry(entry: Entry): SelectEntryAction {
+  return {
+    type: "SELECT_ENTRY",
+    payload: entry
   };
 }

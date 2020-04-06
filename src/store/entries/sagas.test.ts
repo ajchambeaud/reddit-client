@@ -1,9 +1,17 @@
 import { takeEvery, call, put } from "redux-saga/effects";
+import { getItem, setItem } from "../../utils/storage";
+
 import { Entry } from "./types";
-import { fetchEntriesListener, fetchEntriesWorker } from "./sagas";
+import {
+  fetchEntriesListener,
+  fetchEntriesWorker,
+  selectEntryListener,
+  selectEntryWorker
+} from "./sagas";
 import { getEntries } from "../../utils/api";
 
 import {
+  selectEntry,
   fetchEntries,
   fetchEntriesFailure,
   fetchEntriesSuccess
@@ -27,6 +35,13 @@ test("fetchEntriesListener() should listen to fetchEntries action and initiate t
   expect(gen.next().value).toEqual(expectedEffect);
 });
 
+test("selectEntryListener() should listen to selectEntry action and initiate the worker", () => {
+  const gen = selectEntryListener();
+  const expectedEffect = takeEvery(selectEntry(entry).type, selectEntryWorker);
+
+  expect(gen.next().value).toEqual(expectedEffect);
+});
+
 test("fetchEntriesWorker() should dispatch fetchEntriesFailure when api request fails", () => {
   const gen = fetchEntriesWorker(fetchEntries());
 
@@ -38,11 +53,30 @@ test("fetchEntriesWorker() should dispatch fetchEntriesFailure when api request 
 
 test("fetchEntriesWorker() should dispatch fetchEntriesSuccess when api request success", () => {
   const gen = fetchEntriesWorker(fetchEntries());
+  const localStorageResponse: string[] = [];
+  const apiResponse = [entry];
+
+  gen.next();
+  gen.next(apiResponse);
 
   const expectedEffect = put(fetchEntriesSuccess([entry]));
-  gen.next();
 
-  expect(gen.next([entry]).value).toEqual(expectedEffect);
+  expect(gen.next(localStorageResponse).value).toEqual(expectedEffect);
+});
+
+test("fetchEntriesWorker() should mark the data as visited when is present in localStorage", () => {
+  const gen = fetchEntriesWorker(fetchEntries());
+  const localStorageResponse = [entry.id];
+  const apiResponse = [entry];
+
+  gen.next();
+  gen.next(apiResponse);
+
+  const expectedEffect = put(
+    fetchEntriesSuccess([{ ...entry, visited: true }])
+  );
+
+  expect(gen.next(localStorageResponse).value).toEqual(expectedEffect);
 });
 
 test("fetchEntriesWorker() should call api whit after parameter taken from action payload", () => {
@@ -51,4 +85,30 @@ test("fetchEntriesWorker() should call api whit after parameter taken from actio
   const expectedEffect = call(getEntries, fetchEntries("123").payload);
 
   expect(gen.next().value).toEqual(expectedEffect);
+});
+
+test("selectEntryWorker() should save selected items ids in localStorage when localStorage is empty", () => {
+  const gen = selectEntryWorker(selectEntry(entry));
+
+  const expectedEffect1 = call(getItem, "visited", []);
+  const expectedEffect2 = call(setItem, "visited", [entry.id]);
+
+  expect(gen.next().value).toEqual(expectedEffect1);
+  expect(gen.next([]).value).toEqual(expectedEffect2);
+});
+
+test("selectEntryWorker() should save selected items ids in localStorage has data", () => {
+  const gen = selectEntryWorker(selectEntry(entry));
+
+  const expectedEffect1 = call(getItem, "visited", []);
+  const expectedEffect2 = call(setItem, "visited", ["123", entry.id]);
+
+  expect(gen.next().value).toEqual(expectedEffect1);
+  expect(gen.next(["123"]).value).toEqual(expectedEffect2);
+});
+
+test("selectEntryWorker() should do nothing if the entry has already been visited", () => {
+  const gen = selectEntryWorker(selectEntry({ ...entry, visited: true }));
+
+  expect(gen.next().value).toBeUndefined();
 });

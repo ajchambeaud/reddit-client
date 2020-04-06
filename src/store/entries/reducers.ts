@@ -15,6 +15,7 @@ export function entriesReducer(
 
     case "FETCH_ENTRIES_SUCCESS":
       return {
+        ...state,
         list: [...state.list, ...action.payload],
         status: "Success"
       };
@@ -32,6 +33,19 @@ export function entriesReducer(
       return {
         ...state,
         list: []
+      };
+
+    case "SELECT_ENTRY":
+      return {
+        ...state,
+        selected: state.list.find(entry => entry.id === action.payload.id),
+        list: action.payload.visited
+          ? state.list
+          : state.list.map(entry =>
+              entry.id === action.payload.id
+                ? { ...entry, visited: true }
+                : entry
+            )
       };
 
     default:
