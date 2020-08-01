@@ -12,7 +12,7 @@ http://reddit-client-ajchambeaud.surge.sh/
 
 ### Architecture
 
-When doing a code challenge, you have at least two different approaches: the quick and dirty approach and the overengineered one. In the first case you one to prove how quick you can solve a problem following the KISS principle, you may even make the whole exercise in one file. After you finish your code reviewers can think that your application may not scale. If you take the overengineered approach, even for a simple challenge you will create a solution as much production ready as possible and you would plan the architecture as if the application would grow in functionality, in a similar way that you would do it for a real world project.
+When doing a code challenge, you have at least two different approaches: the quick and dirty approach and the overengineered one. In the first case you want to prove how quick you can solve a problem following the KISS principle, you may even make the whole exercise in one file. After you finish your code reviewers can think that your application may not scale. If you take the overengineered approach, even for a simple challenge you will create a solution as much production ready as possible and you would plan the architecture as if the application would grow in functionality, in a similar way that you would do it for a real world project.
 
 I decided to take the second approach, that why I made the disclaimer: probably for a problem like this one, even using redux may be overkill. You could probably solve it with pure React quickly. There was a recommendation to use redux so I tried to organize the application architecture as I would with a bigger one. 
 
